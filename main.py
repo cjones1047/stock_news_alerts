@@ -20,8 +20,10 @@ alphavantage_parameters = {
 response = requests.get("https://www.alphavantage.co/query", params=alphavantage_parameters)
 response.raise_for_status()
 alphavantage_days_data = response.json()["Time Series (Daily)"]
-last_two_days = list(alphavantage_days_data.items())[:2]
-print(last_two_days)
+last_two_days = [kv_pair for i, kv_pair in enumerate(alphavantage_days_data.values()) if i < 2]
+daily_price_change = float(last_two_days[0]["4. close"]) - float(last_two_days[1]["4. close"])
+daily_price_change_percent = round(daily_price_change / float(last_two_days[1]["4. close"]) * 100, 1)
+print(daily_price_change_percent)
 
 # todays_date = datetime.date.today()
 # yesterdays_date = todays_date - datetime.timedelta(days=1)
