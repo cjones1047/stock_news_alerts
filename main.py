@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+import requests
 
 load_dotenv()
 
@@ -9,7 +10,22 @@ COMPANY_NAME = "Tesla Inc"
 ## STEP 1: Use https://www.alphavantage.co
 # When STOCK price increase/decreases by 5% between yesterday and the day before yesterday then print("Get News").
 alphavantage_api_key = os.getenv("ALPHAVANTAGE_API_KEY")
-print(alphavantage_api_key)
+
+alphavantage_parameters = {
+    "function": "TIME_SERIES_DAILY_ADJUSTED",
+    "symbol": STOCK,
+    "apikey": alphavantage_api_key
+}
+
+response = requests.get("https://www.alphavantage.co/query", params=alphavantage_parameters)
+response.raise_for_status()
+alphavantage_days_data = response.json()["Time Series (Daily)"]
+last_two_days = list(alphavantage_days_data.items())[:2]
+print(last_two_days)
+
+# todays_date = datetime.date.today()
+# yesterdays_date = todays_date - datetime.timedelta(days=1)
+# print(yesterdays_date)
 
 ## STEP 2: Use https://newsapi.org
 # Instead of printing ("Get News"), actually get the first 3 news pieces for the COMPANY_NAME. 
